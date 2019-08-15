@@ -1,29 +1,33 @@
 import m from "mithril";
 
+import { countStore } from "../stores/count_store";
+import { reaction } from "mobx";
+import { redraw } from "../meta/redraw";
 
-export function Counter(initialVnode) {
-  let count = 0;
 
-  const increment = () => {
-    count = count + 1;
-  }
-  
-  return {
-    oninit: vnode => {
-      console.log("counter inited, with vnode:");
-      console.log(vnode);
-    },
-    view: vnode => {
-      return m(
-        "div",
-        m("div", `The count is at: ${count}`),
-        m("div",
-          m("button",
-            { type: "click", onclick: increment },
-            "Increment!"
-           )
+const increment = () => {
+  countStore.incrementCount();
+}
+
+export const Counter = {
+  oninit: vnode => {
+    reaction(
+      () => countStore.currentCount,
+      () => {
+        redraw();
+      }
+    )
+  },
+  view: vnode => {
+    return m(
+      "div",
+      m("div", `The count is at: ${countStore.currentCount}`),
+      m("div",
+        m("button",
+          { type: "click", onclick: increment },
+          "Increment!"
          )
-      );
-    },
-  };
+       )
+    );
+  },
 }

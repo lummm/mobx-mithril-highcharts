@@ -1,6 +1,7 @@
 import m from "mithril";
 
 import { Counter } from "./components/counter";
+import { setRedrawFn } from "./meta/redraw";
 
 
 const baseElement = document.getElementById("app");
@@ -8,12 +9,11 @@ const baseElement = document.getElementById("app");
 const redraw = () => {
   m.render(
     baseElement as Element,
-    m(
-      Counter
-    )
+    m(Counter),
   );
+
 };
 
-window["redraw"] = redraw;
+setRedrawFn(redraw);
 
 redraw();
