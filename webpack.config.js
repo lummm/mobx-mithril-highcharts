@@ -1,9 +1,14 @@
 const path = require("path");
+const { execSync } = require("child_process");
+
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 
-const rev = "1";
-const jsOutputFname = `bundle.${rev}.js`;
+
+const gitRev = execSync("git log -1 --format=%H")
+      .toString()
+      .trim();
+const jsOutputFname = `bundle.${gitRev}.js`;
 
 module.exports = {
   entry: "./src/main.ts",
@@ -18,7 +23,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [ ".ts" ]
+    extensions: [ ".ts", ".js" ]
   },
   output: {
     filename: jsOutputFname,
