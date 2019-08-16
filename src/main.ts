@@ -2,7 +2,7 @@ import m from "mithril";
 
 import { Counter } from "./components/counter";
 import { setRedrawFn } from "./meta/redraw";
-import { countStore } from "./stores/count_store";
+import { countStore } from "./stores/CountStore";
 
 
 const baseElement = document.getElementById("app");

@@ -1,8 +1,6 @@
 import m from "mithril";
 
-import { countStore } from "../stores/count_store";
-import { reaction, autorun, IReactionDisposer } from "mobx";
-import { redraw } from "../meta/redraw";
+import { countStore } from "../stores/CountStore";
 import { makeComponent } from "../meta/app_components/makeComponent";
 
 
