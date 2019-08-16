@@ -14,19 +14,27 @@ const increment = () => {
 export const Counter = makeComponent<
   { id: number }, { count: number }
   >({
-  getState: () => ({
-    count: countStore.currentCount,
-  }),
-  view: function(vnode) {
-    return m(
-      "div",
-      m("div", `The count in ${vnode.attrs.id} is at: ${vnode.state.data.count}`),
-      m("div",
-        m("button",
-          { type: "click", onclick: increment },
-          "Increment!"
+    getState: () => ({
+      count: countStore.currentCount,
+    }),
+    oninit: function(vnode) {
+      console.log("hi I'm initing myself here");
+      console.log(vnode);
+    },
+    view: function(vnode) {
+      return m(
+        "div",
+        m("div", `The count in ${vnode.attrs.id} is at: ${vnode.state.data.count}`),
+        m("div",
+          m("button",
+            { type: "click", onclick: increment },
+            "Increment!"
+           )
          )
-       )
-    );
-  }
-})
+      );
+    },
+    onremove: function(vnode){
+      console.log("I am removing insdie here");
+      console.log(vnode);
+    }
+  })

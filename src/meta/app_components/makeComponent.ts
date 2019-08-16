@@ -13,6 +13,9 @@ export function makeComponent<Attr, State>(
   return {
     oninit: function(vnode) {
       vnode.state.data = recipe.getState();
+      if (recipe.oninit) {
+        recipe.oninit.bind(vnode.state)(vnode);
+      }
     },
     oncreate: function(vnode) {
       stopUpdating = autorun(() => {
@@ -20,12 +23,18 @@ export function makeComponent<Attr, State>(
         redraw();
         console.log("updating");
       });
+      if (recipe.oncreate) {
+        recipe.oncreate.bind(vnode.state)(vnode);
+      }
     },
     view: function(vnode) {
       return recipe.view(vnode);
     },
-    onremove: function() {
+    onremove: function(vnode) {
       stopUpdating();
+      if (recipe.onremove) {
+        recipe.onremove.bind(vnode.state)(vnode);
+      }
     },
   }
 }
