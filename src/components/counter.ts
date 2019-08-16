@@ -1,30 +1,41 @@
 import m from "mithril";
 
 import { countStore } from "../stores/count_store";
-import { reaction, autorun } from "mobx";
+import { reaction, autorun, IReactionDisposer } from "mobx";
 import { redraw } from "../meta/redraw";
-import { makeComponent } from "../meta/make_component";
+import { makeComponent } from "../meta/app_components/makeComponent";
 
 
 const increment = () => {
   countStore.incrementCount();
 }
 
-export const Counter = makeComponent<{
+export const Counter = (): m.Component<
+  { id: number }, { count: number }
+  > => {
+  let stopUpdating: IReactionDisposer;
 
-}>(
-  () => ({
-    count: countStore.currentCount
-  }),
-  {
-    view: (vnode: any) => m(
-      "div",
-      m("div", `The count in ${vnode.attrs.id} is at: ${vnode.state.input.count}`),
-      m("div",
-        m("button",
-          { type: "click", onclick: increment },
-          "Increment!"
+  return {
+    oncreate: vnode => {
+      stopUpdating = autorun(() => {
+        vnode.state.count = countStore.currentCount;
+        redraw();
+      });
+    },
+    view: vnode => {
+      return m(
+        "div",
+        m("div", `The count in ${vnode.attrs.id} is at: ${vnode.state.count}`),
+        m("div",
+          m("button",
+            { type: "click", onclick: increment },
+            "Increment!"
+           )
          )
-       )
-    )}
-);
+      );
+    },
+    onremove: () => {
+      stopUpdating();
+    },
+  };
+}
