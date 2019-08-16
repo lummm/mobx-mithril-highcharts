@@ -2,6 +2,8 @@ const attrs = {
   redrawFn: null,
 };
 
+window["x"] = attrs;
+
 export function setRedrawFn(
   redrawFn: () => void,
 ): void {
@@ -9,5 +11,5 @@ export function setRedrawFn(
 }
 
 export function redraw(): void {
-  attrs.redrawFn();
+  attrs.redrawFn && attrs.redrawFn();
 }
