@@ -21,10 +21,10 @@ export const Counter = makeComponent<
       console.log("hi I'm initing myself here");
       console.log(vnode);
     },
-    view: function(vnode) {
+    view: function(vnode, attrs, state) {
       return m(
         "div",
-        m("div", `The count in ${vnode.attrs.id} is at: ${vnode.state.data.count}`),
+        m("div", `The count in ${attrs.id} is at: ${state.count}`),
         m("div",
           m("button",
             { type: "click", onclick: increment },

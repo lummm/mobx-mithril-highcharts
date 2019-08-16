@@ -1,7 +1,6 @@
 import m from "mithril";
 import { autorun, IReactionDisposer } from "mobx";
 import { redraw } from "../redraw";
-import { AppComponent } from "./AppComponent";
 import { ComponentRecipe } from "./ComponentRecipe";
 
 
@@ -28,7 +27,9 @@ export function makeComponent<Attr, State>(
       }
     },
     view: function(vnode) {
-      return recipe.view(vnode);
+      const attrs: Attr = vnode.attrs;
+      const state: State = vnode.state.data;
+      return recipe.view(vnode, attrs, state);
     },
     onremove: function(vnode) {
       stopUpdating();
