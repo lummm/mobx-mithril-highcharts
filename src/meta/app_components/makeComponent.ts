@@ -1,58 +1,31 @@
 import m from "mithril";
-import { autorun } from "mobx";
+import { autorun, IReactionDisposer } from "mobx";
 import { redraw } from "../redraw";
 import { AppComponent } from "./AppComponent";
-  
+import { ComponentRecipe } from "./ComponentRecipe";
 
 
-export function makeComponent<Params, State>(
-  appComponent: AppComponent<Params, State>
-): m.Component<Params, State> {
-  console.log("running here");
+export function makeComponent<Attr, State>(
+  recipe: ComponentRecipe<Attr, State>
+) {
+  let stopUpdating: IReactionDisposer;
 
-  // return {
-  //   oninit: vnode => {
-  //     autorun(() => {
-  //       console.log("updating");
-  //       const input = appComponent.getState();
-  //       Object.assign(vnode.state, input);
-  //       console.log("state in here is");
-  //       console.log(vnode.state);
-  //       redraw();
-  //     });
-  //     const originalOnInit = appComponent.component.oninit;
-  //     if (originalOnInit) {
-  //       console.log("executing original oninit");
-  //       originalOnInit.bind(
-  //         appComponent.getState()
-  //       )(vnode);
-  //     }
-  //   },
-  //   view: vnode => appComponent.component.view.bind(
-  //     vnode.state
-  //   )(vnode),
-  // }
-
-  const wrappedComponent = {
-    oninit: vnode => {
-      console.log("oninit");
+  return {
+    oninit: function(vnode) {
+      vnode.state.data = recipe.getState();
     },
-    view: vnode => m(
-      appComponent.component, vnode.attrs
-    ),
-    onremove: () => {
-      console.log("on remove");
+    oncreate: function(vnode) {
+      stopUpdating = autorun(() => {
+        vnode.state.data = recipe.getState();
+        redraw();
+        console.log("updating");
+      });
     },
-  };
-
-  autorun(function() {
-    const state = appComponent.getState();
-    console.log("new state");
-    console.log(state);
-    console.log("the interior component");
-    (<any>appComponent.component).state.data = state;
-    redraw();
-  });
-
-  return wrappedComponent;
+    view: function(vnode) {
+      return recipe.view(vnode);
+    },
+    onremove: function() {
+      stopUpdating();
+    },
+  }
 }

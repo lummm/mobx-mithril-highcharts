@@ -10,32 +10,23 @@ const increment = () => {
   countStore.incrementCount();
 }
 
-export const Counter = (): m.Component<
-  { id: number }, { count: number }
-  > => {
-  let stopUpdating: IReactionDisposer;
 
-  return {
-    oncreate: vnode => {
-      stopUpdating = autorun(() => {
-        vnode.state.count = countStore.currentCount;
-        redraw();
-      });
-    },
-    view: vnode => {
-      return m(
-        "div",
-        m("div", `The count in ${vnode.attrs.id} is at: ${vnode.state.count}`),
-        m("div",
-          m("button",
-            { type: "click", onclick: increment },
-            "Increment!"
-           )
+export const Counter = makeComponent<
+  { id: number }, { count: number }
+  >({
+  getState: () => ({
+    count: countStore.currentCount,
+  }),
+  view: function(vnode) {
+    return m(
+      "div",
+      m("div", `The count in ${vnode.attrs.id} is at: ${vnode.state.data.count}`),
+      m("div",
+        m("button",
+          { type: "click", onclick: increment },
+          "Increment!"
          )
-      );
-    },
-    onremove: () => {
-      stopUpdating();
-    },
-  };
-}
+       )
+    );
+  }
+})
