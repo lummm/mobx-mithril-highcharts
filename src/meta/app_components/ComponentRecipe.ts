@@ -1,11 +1,11 @@
 import m from "mithril";
 
 
-export interface ComponentRecipe<Attrs, State> extends m.Lifecycle<Attrs, State> {
-  getState: () => State,
+export interface ComponentRecipe<Attrs, ExtState, IntState> extends m.Lifecycle<Attrs, IntState> {
+  getState: () => ExtState,
   view: (
-    vnode: m.Vnode<Attrs, { data: State }>,
+    vnode: m.Vnode<Attrs, IntState>,
     attrs: Attrs,
-    state: State,
+    state: ExtState,
   ) => m.Children,
 }

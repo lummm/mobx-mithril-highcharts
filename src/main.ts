@@ -3,6 +3,7 @@ import m from "mithril";
 import { Counter } from "./components/counter";
 import { setRedrawFn } from "./meta/redraw";
 import { countStore } from "./stores/CountStore";
+import { ChartComponent } from "./components/ChartComponent";
 
 
 const baseElement = document.getElementById("app");
@@ -17,9 +18,9 @@ const redraw = () => {
       m(Counter, {id: 3}),
       countStore.currentCount < 3 ?
         m(Counter, {id: 4}) : m("div"),
+      m(ChartComponent),
      )
   );
-
 };
 
 setRedrawFn(redraw);

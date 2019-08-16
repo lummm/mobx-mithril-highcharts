@@ -4,23 +4,21 @@ import { redraw } from "../redraw";
 import { ComponentRecipe } from "./ComponentRecipe";
 
 
-export function makeComponent<Attr, State>(
-  recipe: ComponentRecipe<Attr, State>
+export function makeComponent<Attr, ExtState, IntState>(
+  recipe: ComponentRecipe<Attr, ExtState, IntState>
 ) {
   let stopUpdating: IReactionDisposer;
 
   return {
     oninit: function(vnode) {
-      vnode.state.data = recipe.getState();
       if (recipe.oninit) {
         recipe.oninit.bind(vnode.state)(vnode);
       }
     },
     oncreate: function(vnode) {
       stopUpdating = autorun(() => {
-        vnode.state.data = recipe.getState();
+        recipe.getState();
         redraw();
-        console.log("updating");
       });
       if (recipe.oncreate) {
         recipe.oncreate.bind(vnode.state)(vnode);
@@ -28,8 +26,7 @@ export function makeComponent<Attr, State>(
     },
     view: function(vnode) {
       const attrs: Attr = vnode.attrs;
-      const state: State = vnode.state.data;
-      return recipe.view(vnode, attrs, state);
+      return recipe.view(vnode, attrs, recipe.getState());
     },
     onremove: function(vnode) {
       stopUpdating();

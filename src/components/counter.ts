@@ -10,8 +10,10 @@ const increment = () => {
 
 
 export const Counter = makeComponent<
-  { id: number }, { count: number }
-  >({
+  { id: number },
+{ count: number },
+null>(
+  {
     getState: () => ({
       count: countStore.currentCount,
     }),
@@ -35,4 +37,5 @@ export const Counter = makeComponent<
       console.log("I am removing insdie here");
       console.log(vnode);
     }
-  })
+  }
+);
